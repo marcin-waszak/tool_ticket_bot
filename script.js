@@ -4,11 +4,12 @@ var page = webPage.create();
 var system = require('system');
 
 page.viewportSize = {
-  width: 1600,
-  height: 900
+  width: 1920,
+  height: 1080
 };
 
-page.settings.userAgent = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36';
+page.settings.userAgent = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:63.0) Gecko/20100101 Firefox/63.0';
+phantom.clearCookies();
 
 if(system.args.length < 2)
 {
@@ -45,10 +46,9 @@ else
 			var content = page.content;
 			fs.write("rendered_js.html", content, 'w');
 			console.log("src dump");
+			page.clearMemoryCache();
             phantom.exit();
-        }, time); // Change timeout as required to allow sufficient time 
-		
-		
+        }, time); // Change timeout as required to allow sufficient time
     }
 	});
 }
