@@ -86,7 +86,7 @@ def main():
 			time.sleep(30 * 60)
 			continue
 		
-		if(data.find('map__wrapper') != -1):
+		elif(data.find('map__wrapper') != -1):
 			if(data.find('"block is-ga"') == -1):
 				print('Found GA ticket!\nSending e-mail...');
 				title = '[ToolBot] Found GA Tool ticket !!'
@@ -95,6 +95,15 @@ def main():
 				make_dump('dump_found')
 			else:
 				print('Still no tickets...');
+
+		else:
+			print('Unknown error!\nSending e-mail... Pausing for 5 minutes...');
+			title = '[ToolBot] Unknown error'
+			message = 'As in title.'
+			mail(from_address, to_address, from_password, title, message)
+			make_dump('dump_unknown')
+			time.sleep(5 * 60)
+			continue
 
 		time.sleep(150 + random.randint(-30, 30))
 
