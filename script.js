@@ -1,8 +1,3 @@
-//function sleep(ms) {
-//  return new Promise(resolve => setTimeout(resolve, ms));
-//}
-
-
 //phantomjs
 var webPage = require('webpage');
 var page = webPage.create();
@@ -38,7 +33,7 @@ else
 		
 		time += 2000;
 		window.setTimeout(function () {
-			page.render('google_home2x.jpg', {format: 'jpeg', quality: '100'});
+			page.render('rendered_preview.jpg', {format: 'jpeg', quality: '80'});
 			console.log("screen dump");
 			
 
@@ -48,7 +43,7 @@ else
 		window.setTimeout(function () {
 			var fs = require('fs');
 			var content = page.content;
-			fs.write("out_x.html", content, 'w');
+			fs.write("rendered_js.html", content, 'w');
 			console.log("src dump");
             phantom.exit();
         }, time); // Change timeout as required to allow sufficient time 
