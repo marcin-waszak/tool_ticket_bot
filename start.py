@@ -12,9 +12,9 @@ from subprocess import call
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-from_address = 'konto_bota@gmail'
-from_password = 'passwd'
-to_address = 'madras95@gmail.com'
+from_address = 'XXXX@gmail.com'
+from_password = 'YYYY'
+to_address = 'ZZZZ'
 
 def print_log(log = '', end = '\n'):
 	log_prefix = '['
@@ -26,11 +26,11 @@ def print_log(log = '', end = '\n'):
 	sys.stdout.flush()
 	
 def create_folder(directory):
-    try:
-        if not os.path.exists(directory):
-            os.makedirs(directory)
-    except OSError:
-        print ('Error: Creating directory. ' +  directory)
+	try:
+		if not os.path.exists(directory):
+			os.makedirs(directory)
+	except OSError:
+		print ('Error: Creating directory. ' +  directory)
 		
 def make_dump(prefix = 'dump'):
 	current_time = datetime.now().strftime(prefix + '_%Y%m%d%H%M%S')
@@ -40,6 +40,12 @@ def make_dump(prefix = 'dump'):
 		shutil.copy(file, current_time)
 	
 	print_log('Dumped data: ' + current_time)
+	
+def schedule_break():
+	result = random.randint(1, 50);
+	print_log('Next break in %d loops' % result)
+	return result
+
 
 def mail(from_address, to_address, password, subject = None, message = None):
 	mailserver = smtplib.SMTP_SSL('smtp.gmail.com', 465)
@@ -70,8 +76,17 @@ def main():
 	
 	FNULL = open(os.devnull, 'w')
 	
+	loops_to_break = schedule_break()
+	
 	while True:
-		print_log('Checking...', end = ' ');
+		--loops_to_break
+		if(loops_to_break == 0):
+			pausing_minutes = random.randint(15, 30)
+			print_log('Scheduled pause for %d minutes' % pausing_minutes)
+			time.sleep(pausing_minutes * 60)
+			loops_to_break = chedule_break()
+		
+		print_log('Invoking phantomjs for the check...', end = ' ');
 		call(["phantomjs", "script.js", "https://www.ticketmaster.pl/event/impact-festival-2019-tool-tickets/9517?brand=pl_livenation&camefrom=cfc_cob_livenation"], stdout=FNULL, stderr=subprocess.STDOUT)
 
 		with open('rendered_js.html', 'r') as finaljs:
@@ -85,7 +100,7 @@ def main():
 			make_dump('dump_bot')
 			time.sleep(30 * 60)
 			continue
-		
+
 		elif(data.find('map__wrapper') != -1):
 			if(data.find('"block is-ga"') == -1):
 				print('Found GA ticket!\nSending e-mail...');
@@ -105,7 +120,7 @@ def main():
 			time.sleep(5 * 60)
 			continue
 
-		time.sleep(150 + random.randint(-30, 30))
+		time.sleep(150 + random.randint(-50, 50))
 
 if __name__ == "__main__":
-    main()
+	main()
